@@ -86,21 +86,22 @@ def string_parser(data):
 			#print("outside ", data," and the pos is ",pos)
 			if(data[pos-1] != '\\'):
 				#print(data," and the pos is ",pos)
-				return [data[:pos+1], data[pos + 1:].strip()]
+				return [data[:pos+1], data[pos + 2:].strip()]
 			else:
 				temp = data[pos + 1:]
 				temp_pos = temp.find('"')
 
 def number_parser(data):
-    parse_num = re.findall("^(-?(?:\d+)(?:\.\d+)?(?:[eE][+-]?\d+)?)",
+	print("number data is: ",data)
+	parse_num = re.findall("^(-?(?:\d+)(?:\.\d+)?(?:[eE][+-]?\d+)?)",
                             data)
-    if not parse_num:
-        return None
-    pos = len(parse_num)
-    try:
-        return [int(parse_num), data[pos:].strip()]
-    except ValueError:
-        return [float(parse_num), data[pos:].strip()]
+	if not parse_num:
+		return None
+	pos = len(parse_num)
+	try:
+		return [int(parse_num), data[pos:].strip()]
+	except ValueError:
+		return [float(parse_num), data[pos:].strip()]
 
 '''
 ARRAY PARSER APPROACH:
@@ -113,34 +114,66 @@ TEST CASE 6 : ["apple" , "happy"]
 '''
 
 def array_Parser(data):
+	parsed_array = []
 	if(data[0] != "["):
-		return[None, data]
-	else:
-		value_parser(data[1:])
-		array_pos = data.find("]")
-		return [data[:array_pos + 1],data[array_pos+1:]]
+		return [None, data]
+	data = data[1:].strip()
+	while True:
+		temp = value_parser(data)
+		print("temp is: ",temp[0])
+		#if temp == None:
+		#	return [None,data]
+		parsed_array.append(temp[0])
+		print("parsed array Is: ",parsed_array)
+		data = temp[1].strip()
+		if(data[0] == "]"):
+			return [parsed_array,data[array_pos+1:].strip()]
+		
+		res = comma_parser(data)
+		#print("res data is: ",res)
+		if(res is None):
+			return None
+		data = res.strip()
+		#print("res strip data is: ",data)
+		
 
+def comma_parser(data):
+    if(data[0] != ','):
+        return data.strip()
+
+    else:
+        if(data[1] == ']' or data[1] == '}'):
+            raise SyntaxError("Invalid Json , should be followed by value")
+
+        return data[1:].strip()
 
 def value_parser(data):
-	parsers = [null_parser,number_parser,string_parser]
+	parsers = [null_parser,number_parser,string_parser,boolean_parser,array_Parser]
 	for parser in parsers:
-		result = parser(data)
-		print(result)
+		value = parser(data)
+		#print("value is: ",value)
+		#print("unparse is: ",unparse)
+		if(value is None):
+			continue
+		else:
+			return [value[0],value[1]]
+		
 
 
 if __name__ == "__main__":
 	#global f
-	#data = open(sys.argv[1],"r").read()
-	#print(data)
+	data = open(sys.argv[1],"r").read()
+	print(data)
+	'''
+	print("Input data is: ",data)
 	a = 'null    sdfadf'
 	res = null_parser(a)
 	print(res)
 	b = 'false   afsdfs   '
 	print(boolean_parser(b))
 	c = "\"asdfghfk\\\"afd\"success"
-	print(string_parser(c))
-	d = "[sdf]ewrew"
-	print(array_Parser(d))
+	print(string_parser(c))'''
+	print(array_Parser(data))
 	#outputFilename = "genericScannerDriver_op.txt"
 	#f = open(outputFilename, "w")
 	#parsers = (null_parser, number_parser, boolean_parser, string_parser, array_parser, object_parser)
