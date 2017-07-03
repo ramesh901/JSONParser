@@ -86,7 +86,7 @@ def string_parser(data):
 			#print("outside ", data," and the pos is ",pos)
 			if(data[pos-1] != '\\'):
 				#print(data," and the pos is ",pos)
-				return [data[:pos+1], data[pos + 2:].strip()]
+				return [data[:pos], data[pos + 2:].strip()]
 			else:
 				temp = data[pos + 1:]
 				temp_pos = temp.find('"')
@@ -97,11 +97,14 @@ def number_parser(data):
                             data)
 	if not parse_num:
 		return None
-	pos = len(parse_num)
+	#print(parse_num.type())
+	pos = len(str(parse_num))
+	print("pos is",pos)
+	print("parsed number is:", parse_num)
 	try:
-		return [int(parse_num), data[pos:].strip()]
+		return [int(parse_num[0]), data[pos-4:].strip()]
 	except ValueError:
-		return [float(parse_num), data[pos:].strip()]
+		return [float(parse_num[0]), data[pos-4:].strip()]
 
 '''
 ARRAY PARSER APPROACH:
@@ -113,6 +116,10 @@ TEST CASE 5 : [123 , 324]
 TEST CASE 6 : ["apple" , "happy"]
 '''
 
+'''
+Fix "Pos" in Number parser
+Add array parser within value parser
+'''
 def array_Parser(data):
 	parsed_array = []
 	if(data[0] != "["):
