@@ -33,6 +33,9 @@ def number_parser(data):
 	if not parse_num:
 		return None
 	pos = len(str(parse_num))
+	# if our parse_num is 123 then pos value comes as 7. 
+	#It counts brackets and quotes also in the length as ['123'].
+	#To avoid it we are subtracting 4
 	try:
 		return [int(parse_num[0]), data[pos-4:].strip()]
 	except ValueError:
