@@ -83,11 +83,11 @@ def comma_parser(data):
         return data[1:].strip()
     
 def  comma_error(data):
-	if data and data[0] in (']','}'):
-		raise SyntaxError(", has to be removed or value has to be added")
-	else:
-		return data
-	
+    if data and data[0] in (']','}'):
+        raise SyntaxError(", has to be removed or value has to be added")
+    else:
+        return data
+    
 def colon_parser(data):
     if data[0] != ':':
         return None
@@ -102,8 +102,8 @@ def value_parser(data):
         value = parser(data)
         
         if value:
-        	#print(parser,"value is", value[0])
-        	return [value[0],value[1]]
+            #print(parser,"value is", value[0])
+            return [value[0],value[1]]
 
 def object_parser(data):
     parsed_obj = {}
@@ -114,8 +114,8 @@ def object_parser(data):
         value = string_parser(data)
         #print("string values are:",value[0])
         if value is None:
-        	#print("string parser is None")
-        	return None
+            #print("string parser is None")
+            return None
         #print("key is",key)
         #print("value is",value)
         char = colon_parser(value[1].strip())
@@ -129,7 +129,7 @@ def object_parser(data):
             char = comma_parser(val[1])
             comma_error_parsed = comma_error(char)
             if comma_error_parsed:
-            	data = comma_error_parsed.strip()
+                data = comma_error_parsed.strip()
         else:
             return None
         
